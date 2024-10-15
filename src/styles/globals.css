@@ -19,6 +19,9 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+h1 {
+  font-family: 'Josefin Sans', sans-serif !important;
+}
 
 @layer utilities {
   .text-balance {
