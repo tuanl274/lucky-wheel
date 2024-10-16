@@ -3,7 +3,7 @@ import LuckyWheel from './LuckyWheel'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { IConfig, IFormData } from './type'
+import { IConfigLevel, IFormData } from './type'
 
 interface ISetUpFromProps {
   onContinue: (data: IFormData) => void
@@ -39,7 +39,7 @@ const Home = () => {
 
 const SetUpForm = (props: ISetUpFromProps) => {
   const [csvUrl, setCsvUrl] = useState('')
-  const [config, setConfig] = useState<IConfig>({
+  const [config, setConfig] = useState<IConfigLevel>({
     special: 1,
     first: 1,
     second: 1,
