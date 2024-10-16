@@ -1,8 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import LuckyWheel from './LuckyWheel'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { IConfig, IFormData } from './type'
+
+interface ISetUpFromProps {
+  onContinue: (data: IFormData) => void
+}
 
 const Home = () => {
   const [data, setData] = useState<any>(null)
@@ -18,7 +23,7 @@ const Home = () => {
         <div className='text-center'>
           <h1 className='text-8xl mb-20'>Vòng quay may mắn</h1>
 
-          <LuckyWheel wheelItems={data.wheelItems} total={data.total} />
+          <LuckyWheel {...data} />
         </div>
       ) : (
         <SetUpForm
@@ -32,9 +37,22 @@ const Home = () => {
   )
 }
 
-const SetUpForm = (props: any) => {
+const SetUpForm = (props: ISetUpFromProps) => {
   const [csvUrl, setCsvUrl] = useState('')
-  const [total, setTotal] = useState(10)
+  const [config, setConfig] = useState<IConfig>({
+    special: 1,
+    first: 1,
+    second: 1,
+    third: 1,
+    four: 5
+  })
+
+  const total = useMemo(
+    () =>
+      Object.values(config).reduce((preValue, value) => preValue + value, 0),
+    [JSON.stringify(config)]
+  )
+
   const [wheelItems, setWheelItems] = useState<{ option: string }[]>([])
 
   const fetchGoogleSheetCSV = async () => {
@@ -71,7 +89,7 @@ const SetUpForm = (props: any) => {
   }, [csvUrl])
 
   return (
-    <div className='h-full w-full flex items-center justify-center'>
+    <div className='h-full w-full flex items-center justify-center text-white'>
       <form className='w-[540px] flex flex-col space-y-4'>
         <label className='input input-bordered flex items-center gap-2'>
           Excel:
@@ -83,18 +101,83 @@ const SetUpForm = (props: any) => {
           />
         </label>
 
-        <label className='input input-bordered flex items-center gap-2'>
-          Số lượng giải
-          <input
-            type='number'
-            className='grow'
-            placeholder='10'
-            onChange={(e) => {
-              setTotal(Number(e.target.value))
-            }}
-            value={total}
-          />
-        </label>
+        <div className='grid grid-cols-2 gap-4'>
+          <label className='input input-bordered flex items-center px-2 col-span-2'>
+            <p className='flex-shrink-0'>Số giải đặc biệt</p>
+            <input
+              type='number'
+              className='text-center w-full'
+              placeholder='Số lượng'
+              onChange={(e) => {
+                setConfig({
+                  ...config,
+                  special: Number(e.target.value)
+                })
+              }}
+              value={config.special}
+            />
+          </label>
+          <label className='input input-bordered flex items-center px-2'>
+            <p className='flex-shrink-0'>Số giải nhất</p>
+            <input
+              type='number'
+              className='text-center w-full'
+              placeholder='Số lượng'
+              onChange={(e) => {
+                setConfig({
+                  ...config,
+                  first: Number(e.target.value)
+                })
+              }}
+              value={config.first}
+            />
+          </label>
+          <label className='input input-bordered flex items-center px-2'>
+            <p className='flex-shrink-0'>Số giải nhì</p>
+            <input
+              type='number'
+              className='text-center w-full'
+              placeholder='Số lượng'
+              onChange={(e) => {
+                setConfig({
+                  ...config,
+                  second: Number(e.target.value)
+                })
+              }}
+              value={config.second}
+            />
+          </label>
+          <label className='input input-bordered flex items-center px-2'>
+            <p className='flex-shrink-0'>Số giải ba</p>
+            <input
+              type='number'
+              className='text-center w-full'
+              placeholder='Số lượng'
+              onChange={(e) => {
+                setConfig({
+                  ...config,
+                  third: Number(e.target.value)
+                })
+              }}
+              value={config.third}
+            />
+          </label>
+          <label className='input input-bordered flex items-center px-2'>
+            <p className='flex-shrink-0'>Số giải khuyến khích</p>
+            <input
+              type='number'
+              className='text-center w-full'
+              placeholder='Số lượng'
+              onChange={(e) => {
+                setConfig({
+                  ...config,
+                  four: Number(e.target.value)
+                })
+              }}
+              value={config.four}
+            />
+          </label>
+        </div>
         <button
           type='button'
           className='btn'
@@ -106,13 +189,15 @@ const SetUpForm = (props: any) => {
             } else {
               props.onContinue({
                 wheelItems,
-                total
+                total,
+                config
               })
             }
           }}
         >
-          Go
+          Tiếp tục
         </button>
+        <p className='text-sm'>Số lượng giải: {total}</p>
         {wheelItems?.length ? (
           <p className='text-sm'>Số người tham gia: {wheelItems.length}</p>
         ) : null}
