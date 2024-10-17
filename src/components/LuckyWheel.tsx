@@ -182,14 +182,14 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
         </dialog>
       </div>
       <div className='col-span-4 text-start flex flex-col space-y-4'>
-        <h2 className='text-3xl text-primary'>
+        <h2 className='text-3xl text-primary text-center'>
           {getTypeLabel(currentLevel).toUpperCase()}
         </h2>
         <div className='grid grid-cols-2 gap-6'>
           {results
             .filter((value) => value.type === currentLevel)
             .map((item) => (
-              <p className='text-xl text-white'> {item.option}</p>
+              <p className='text-xl text-white'>{item.option.toUpperCase()}</p>
             ))}
         </div>
       </div>

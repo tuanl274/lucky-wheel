@@ -46,6 +46,7 @@ const Home = () => {
 
 const SetUpForm = (props: ISetUpFromProps) => {
   const [csvUrl, setCsvUrl] = useState('')
+  const [debouncedValue, setDebouncedValue] = useState('')
   const [config, setConfig] = useState<IConfigLevel>({
     special: 1,
     first: 1,
@@ -87,15 +88,27 @@ const SetUpForm = (props: ISetUpFromProps) => {
   }
 
   useEffect(() => {
+    // Set a timer to update debouncedValue after a delay
+    const handler = setTimeout(() => {
+      setDebouncedValue(csvUrl)
+    }, 500) // 500ms debounce delay
+
+    // Clean up the timeout if the user types within the delay time
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [csvUrl])
+
+  useEffect(() => {
     const fetchData = async () => {
       const items = await fetchGoogleSheetCSV()
       setWheelItems(items)
     }
 
-    if (csvUrl) {
+    if (debouncedValue) {
       fetchData()
     }
-  }, [csvUrl])
+  }, [debouncedValue])
 
   return (
     <div className='h-full w-full flex items-center justify-center text-white'>
