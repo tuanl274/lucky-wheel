@@ -10,6 +10,15 @@ interface ISetUpFromProps {
   onContinue: (data: IFormData) => void
 }
 
+const capitalizeFirstLetter = (str: string) => {
+  return str
+    .split(' ') // Split the string by spaces into words
+    .map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() // Capitalize first letter, lowercase the rest
+    })
+    .join(' ') // Join the words back together
+}
+
 const Home = () => {
   const [data, setData] = useState<any>(null)
 
@@ -75,7 +84,7 @@ const SetUpForm = (props: ISetUpFromProps) => {
 
       // Map dữ liệu CSV thành các mục cần thiết
       const wheelItems = rows.slice(1).map((row: string[]) => ({
-        option: row[1],
+        option: capitalizeFirstLetter(row[1] || ''),
         value: row[0],
         data: row.join('_')
       }))

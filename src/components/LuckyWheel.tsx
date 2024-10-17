@@ -21,6 +21,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
   const [prizeNumber, setPrizeNumber] = useState(0)
   const [results, setResults] = useState<IResult[]>([])
   const [hideUsers, setHideUsers] = useState<IResult[]>([])
+  const [temp, setTemp] = useState<any>(null)
   const modalRef = useRef(null)
   const audioRef = useRef<HTMLAudioElement>(null)
 
@@ -105,6 +106,8 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
             textColors={['#000']}
             onStopSpinning={() => {
               setMustSpin(false)
+              const luckyMan = items[prizeNumber]
+              setTemp(luckyMan)
 
               setTimeout(() => {
                 // @ts-ignore
@@ -169,6 +172,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
                   type='button'
                   onClick={() => {
                     const luckyMan = items[prizeNumber]
+                    // setTemp(luckyMan)
                     // console.log(luckyMan)
                     setResults([
                       ...results,
@@ -177,6 +181,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
                         type: currentLevel
                       }
                     ])
+                    setTemp(null)
 
                     // @ts-ignore
                     modalRef.current?.close()
@@ -190,7 +195,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
                   onClick={() => {
                     const unLuckyMan = items[prizeNumber]
                     setHideUsers([...hideUsers, { ...unLuckyMan }])
-
+                    setTemp(null)
                     // @ts-ignore
                     modalRef.current?.close()
                   }}
@@ -221,6 +226,17 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
                 <p className='text-lg'>{item.option.toUpperCase()}</p>
               </div>
             ))}
+          {temp && (
+            <div className='text-xl text-white flex space-x-3 items-center ml-10'>
+              <img
+                width='32'
+                height='32'
+                src='/images/check.png'
+                alt='approval'
+              />
+              <p className='text-lg'>{temp.option.toUpperCase()}</p>
+            </div>
+          )}
         </div>
 
         <audio ref={audioRef}>
