@@ -22,6 +22,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
   const [results, setResults] = useState<IResult[]>([])
   const [hideUsers, setHideUsers] = useState<IResult[]>([])
   const modalRef = useRef(null)
+  const audioRef = useRef<HTMLAudioElement>(null)
 
   const items = wheelItems
     // .concat(...wheelItems)
@@ -76,6 +77,22 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
     }
   }
 
+  const getTotalByLevel = (type: ResultType) => {
+    switch (type) {
+      case ResultType.special:
+        return config.special
+      case ResultType.first:
+        return config.first
+      case ResultType.second:
+        return config.second
+      case ResultType.third:
+        return config.third
+
+      default:
+        return config.four
+    }
+  }
+
   return (
     <div className='grid grid-cols-12'>
       <div className='col-span-8 gap-12'>
@@ -92,6 +109,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
               setTimeout(() => {
                 // @ts-ignore
                 modalRef.current?.showModal()
+                audioRef.current?.play()
               }, 200)
             }}
             outerBorderColor='#588CF5'
@@ -110,8 +128,8 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
           >
             <img
               src='/images/logo.png'
-              width={56}
-              height={56}
+              width={72}
+              height={72}
               className='rounded-full'
             />
           </div>
@@ -119,7 +137,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
         <div className='col-span-8'>
           <button
             type='button'
-            className='btn btn-ghost'
+            className='btn btn-link'
             onClick={() =>
               saveExcelFile(
                 results.map((value: any) => {
@@ -184,16 +202,29 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
         </dialog>
       </div>
       <div className='col-span-4 text-start flex flex-col space-y-4'>
-        <h2 className='text-3xl text-primary text-center'>
-          {getTypeLabel(currentLevel).toUpperCase()}
+        <h2 className='text-4xl text-primary font-medium'>
+          0{getTotalByLevel(currentLevel)}{' '}
+          {getTypeLabel(currentLevel).toUpperCase()} 🎁
         </h2>
-        <div className='grid grid-cols-2 gap-6'>
+        <div className='grid grid-cols-1 gap-6'>
           {results
             .filter((value) => value.type === currentLevel)
             .map((item) => (
-              <p className='text-xl text-white'>{item.option.toUpperCase()}</p>
+              <div className='text-xl text-white flex space-x-3 items-center ml-10'>
+                <img
+                  width='32'
+                  height='32'
+                  src='/images/check.png'
+                  alt='approval'
+                />
+                <p className='text-lg'>{item.option.toUpperCase()}</p>
+              </div>
             ))}
         </div>
+
+        <audio ref={audioRef}>
+          <source src='/ta-da.mp3' type='audio/mp3' />
+        </audio>
       </div>
     </div>
   )

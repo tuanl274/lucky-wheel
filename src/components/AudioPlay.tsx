@@ -7,6 +7,9 @@ const AudioPlay = () => {
 
   useEffect(() => {
     // Start playing the audio when the component mounts
+    if (audioRef.current) {
+      audioRef.current.volume = 0.2
+    }
     play()
     return () => {
       // Pause audio when component unmounts
