@@ -117,6 +117,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
             radiusLineWidth={0}
             fontSize={12}
             fontWeight={400}
+            fontFamily='Josefin Sans'
           />
           <div
             className='text-black absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 rounded-full overflow-hidden'
@@ -156,7 +157,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
 
         <dialog id='my_modal_1' className='modal' ref={modalRef}>
           <div className='modal-box'>
-            <h3 className='font-bold text-xl text-white'>Xin chúc mừng </h3>
+            <h3 className='font-medium text-2xl text-white'>Xin chúc mừng </h3>
             <p className='py-4 text-3xl text-center text-primary'>
               🎉 {items[prizeNumber]?.option.toUpperCase()} 🎉
             </p>

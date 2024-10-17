@@ -30,7 +30,7 @@ const AudioPlay = () => {
   return (
     <div className='absolute bottom-6 left-6'>
       <audio ref={audioRef} loop>
-        <source src='/audio.mp3' type='audio/mp3' />
+        <source src='/nhac-xo-so.mp3' type='audio/mp3' />
       </audio>
       <button onClick={() => (paused ? play() : pause())}>
         <img
