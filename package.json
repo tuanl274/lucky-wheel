@@ -15,6 +15,7 @@
     "react-custom-roulette": "^1.4.1",
     "react-dom": "^18",
     "react-toastify": "^10.0.6",
+    "spin-wheel": "^5.0.2",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

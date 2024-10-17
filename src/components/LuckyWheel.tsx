@@ -1,8 +1,10 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Wheel } from 'react-custom-roulette'
 import { toast } from 'react-toastify'
 import * as XLSX from 'xlsx'
 import { IConfigLevel, IResult, ResultType, WheelItem } from './type'
+// @ts-ignore
+// import { Wheel } from 'spin-wheel'
 
 interface LuckyWheelProps {
   wheelItems: WheelItem[]
@@ -26,8 +28,8 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
     .filter((value) => !results.some((rs) => rs.value == value.value))
     .filter((value) => !hideUsers.some((u) => u.value == value.value))
 
-  console.log('results......', results)
-  console.log('hiden.........', hideUsers)
+  // console.log('results......', results)
+  // console.log('hiden.........', hideUsers)
 
   const handleSpinClick = () => {
     if (items.length > 1 && results.length < total) {
@@ -75,7 +77,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
   return (
     <div className='grid grid-cols-12'>
       <div className='col-span-8 gap-12'>
-        <div className='flex items-center flex-col justify-between relative'>
+        <div className='flex items-center flex-col justify-between relative custom-spin'>
           <Wheel
             mustStartSpinning={mustSpin}
             prizeNumber={prizeNumber}
@@ -93,27 +95,50 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
             outerBorderColor='#588CF5'
             outerBorderWidth={10}
             radiusLineWidth={0}
-            fontSize={14}
+            fontSize={12}
+            fontWeight={400}
           />
-          <div className='text-black absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10'>
-            Logo
+          <div
+            className='text-black absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 rounded-full overflow-hidden'
+            onClick={() => {
+              if (!mustSpin) {
+                handleSpinClick()
+              }
+            }}
+          >
+            <img
+              src='/images/logo.png'
+              width={56}
+              height={56}
+              className='rounded-full'
+            />
           </div>
-          {/* <img src='/images/2024-10-15.jpg' /> */}
         </div>
-        <button
-          className='btn btn-primary mt-6 w-24'
-          onClick={handleSpinClick}
-          disabled={mustSpin}
-        >
-          Quay
-        </button>
+        <div className='col-span-8'>
+          <button
+            type='button'
+            className='btn btn-ghost'
+            onClick={() =>
+              saveExcelFile(
+                results.map((value: any) => {
+                  const data = value.data.split('_')
+                  data.push(getTypeLabel(value.type))
+
+                  return data
+                }),
+                'lucky_wheel'
+              )
+            }
+          >
+            Lưu kết quả
+          </button>
+        </div>
 
         <dialog id='my_modal_1' className='modal' ref={modalRef}>
           <div className='modal-box'>
-            <h3 className='font-bold text-lg'>Xin chúc mừng</h3>
-            <p className='py-4 text-2xl'>
-              Người may mắn là{' '}
-              <span className='text-primary'>{items[prizeNumber]?.option}</span>
+            <h3 className='font-bold text-xl text-white'>Xin chúc mừng </h3>
+            <p className='py-4 text-3xl text-center text-primary'>
+              🎉 {items[prizeNumber]?.option.toUpperCase()} 🎉
             </p>
             <div className='modal-action'>
               <form method='dialog'>
@@ -123,7 +148,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
                   type='button'
                   onClick={() => {
                     const luckyMan = items[prizeNumber]
-                    console.log(luckyMan)
+                    // console.log(luckyMan)
                     setResults([
                       ...results,
                       {
@@ -157,54 +182,16 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
         </dialog>
       </div>
       <div className='col-span-4 text-start flex flex-col space-y-4'>
-        <h2>GIẢI ĐẶC BIỆT</h2>
-        {results
-          .filter((value) => value.type === ResultType.special)
-          .map((item) => (
-            <p>{item.option}</p>
-          ))}
-        <h2>GIẢI NHẤT</h2>
-        {results
-          .filter((value) => value.type === ResultType.first)
-          .map((item) => (
-            <p>{item.option}</p>
-          ))}
-        <h2>GIẢI NHÌ</h2>
-        {results
-          .filter((value) => value.type === ResultType.second)
-          .map((item) => (
-            <p>{item.option}</p>
-          ))}
-        <h2>GIẢI BA</h2>
-        {results
-          .filter((value) => value.type === ResultType.third)
-          .map((item) => (
-            <p>{item.option}</p>
-          ))}
-        <h2>GIẢI KHUYẾN KHÍCH</h2>
-        {results
-          .filter((value) => value.type === ResultType.four)
-          .map((item) => (
-            <p>{item.option}</p>
-          ))}
-
-        <button
-          type='button'
-          className='btn btn-ghost'
-          onClick={() =>
-            saveExcelFile(
-              results.map((value: any) => {
-                const data = value.data.split('_')
-                data.push(getTypeLabel(value.type))
-
-                return data
-              }),
-              'lucky_wheel'
-            )
-          }
-        >
-          Lưu kết quả
-        </button>
+        <h2 className='text-3xl text-primary'>
+          {getTypeLabel(currentLevel).toUpperCase()}
+        </h2>
+        <div className='grid grid-cols-2 gap-6'>
+          {results
+            .filter((value) => value.type === currentLevel)
+            .map((item) => (
+              <p className='text-xl text-white'> {item.option}</p>
+            ))}
+        </div>
       </div>
     </div>
   )

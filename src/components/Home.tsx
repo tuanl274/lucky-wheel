@@ -4,6 +4,7 @@ import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { IConfigLevel, IFormData } from './type'
+import AudioPlay from './AudioPlay'
 
 interface ISetUpFromProps {
   onContinue: (data: IFormData) => void
@@ -21,7 +22,7 @@ const Home = () => {
     >
       {data ? (
         <div className='text-center'>
-          <h1 className='text-8xl mb-20'>Vòng quay may mắn</h1>
+          <h1 className='text-8xl mb-20 text-white'>Vòng quay may mắn</h1>
 
           <LuckyWheel {...data} />
         </div>
@@ -33,6 +34,7 @@ const Home = () => {
         />
       )}
       <ToastContainer />
+      <AudioPlay />
     </div>
   )
 }
@@ -62,6 +64,8 @@ const SetUpForm = (props: ISetUpFromProps) => {
 
       // Split CSV thành mảng các hàng
       const rows = data.split('\n').map((row: string) => row.split(',')) || []
+
+      // console.log('rows.......', rows)
 
       // Map dữ liệu CSV thành các mục cần thiết
       const wheelItems = rows.slice(1).map((row: string[]) => ({
