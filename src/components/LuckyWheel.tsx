@@ -37,7 +37,9 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
       setPrizeNumber(newPrizeNumber)
       setMustSpin(true)
     } else {
-      toast('DONE')
+      toast('Quay thưởng hoàn thành', {
+        type: 'success'
+      })
     }
   }
 
