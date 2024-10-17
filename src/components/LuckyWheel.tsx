@@ -118,7 +118,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
             outerBorderColor='#588CF5'
             outerBorderWidth={10}
             radiusLineWidth={0}
-            fontSize={12}
+            fontSize={12 - Math.floor(items.length / 30)}
             fontWeight={400}
             fontFamily='Josefin Sans'
           />
