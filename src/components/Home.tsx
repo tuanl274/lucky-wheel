@@ -44,11 +44,11 @@ const Home = () => {
       )}
       <ToastContainer />
       <AudioPlay />
-      {data ? null : (
+      {/* {data ? null : (
         <div className='absolute bottom-4 right-4 text-sm text-white'>
           Quyên ăn chặn tiền công của dev
         </div>
-      )}
+      )} */}
     </div>
   )
 }
