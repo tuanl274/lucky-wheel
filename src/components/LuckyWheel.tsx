@@ -10,12 +10,16 @@ interface LuckyWheelProps {
   wheelItems: WheelItem[]
   total: number
   config: IConfigLevel
+  normalWheel: boolean
+  price: number
 }
 
 const LuckyWheel: React.FC<LuckyWheelProps> = ({
   wheelItems,
   total,
-  config
+  config,
+  normalWheel = false,
+  price = 0
 }) => {
   const [mustSpin, setMustSpin] = useState(false)
   const [prizeNumber, setPrizeNumber] = useState(0)
@@ -32,6 +36,7 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
 
   // console.log('results......', results)
   // console.log('hiden.........', hideUsers)
+  // console.log('normalWheel.........', normalWheel)
 
   const handleSpinClick = () => {
     if (items.length > 1 && results.length < total) {
@@ -39,13 +44,17 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
       setPrizeNumber(newPrizeNumber)
       setMustSpin(true)
     } else {
-      toast('Quay thưởng hoàn thành', {
+      toast('Quay thưởng đã hoàn thành', {
         type: 'success'
       })
     }
   }
 
   const currentLevel = useMemo(() => {
+    if (normalWheel) {
+      return ResultType.normal
+    }
+
     const length = results.length
 
     if (length < config.four) {
@@ -72,9 +81,10 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
         return 'Giải Nhì'
       case ResultType.third:
         return 'Giải Ba'
-
-      default:
+      case ResultType.four:
         return 'Giải Khuyến Khích'
+      default:
+        return `Phần thưởng`
     }
   }
 
@@ -88,9 +98,11 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
         return config.second
       case ResultType.third:
         return config.third
+      case ResultType.four:
+        return config.four
 
       default:
-        return config.four
+        return config.normal
     }
   }
 
@@ -212,11 +224,17 @@ const LuckyWheel: React.FC<LuckyWheelProps> = ({
           0{getTotalByLevel(currentLevel)}{' '}
           {getTypeLabel(currentLevel).toUpperCase()} 🎁
         </h2>
+        {normalWheel && !!price && (
+          <p className='text-white text-xl'>Trị giá {price}$</p>
+        )}
         <div className='grid grid-cols-1 gap-6'>
           {results
             .filter((value) => value.type === currentLevel)
-            .map((item) => (
-              <div className='text-xl text-white flex space-x-3 items-center ml-10'>
+            .map((item, index) => (
+              <div
+                className='text-xl text-white flex space-x-3 items-center ml-10'
+                key={index}
+              >
                 <img
                   width='32'
                   height='32'

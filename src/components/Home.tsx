@@ -5,6 +5,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { IConfigLevel, IFormData } from './type'
 import AudioPlay from './AudioPlay'
+import Reset from './Reset'
 
 interface ISetUpFromProps {
   onContinue: (data: IFormData) => void
@@ -49,6 +50,7 @@ const Home = () => {
           Quyên ăn chặn tiền công của dev
         </div>
       )} */}
+      <Reset />
     </div>
   )
 }
@@ -61,13 +63,22 @@ const SetUpForm = (props: ISetUpFromProps) => {
     first: 1,
     second: 1,
     third: 1,
-    four: 5
+    four: 5,
+    normal: 0
   })
+
+  const [normalWheel, setNormalWheel] = useState(false)
+  const [price, setPrice] = useState(0)
 
   const total = useMemo(
     () =>
-      Object.values(config).reduce((preValue, value) => preValue + value, 0),
-    [JSON.stringify(config)]
+      normalWheel
+        ? config.normal
+        : Object.values(config).reduce(
+            (preValue, value) => preValue + value,
+            0
+          ),
+    [JSON.stringify(config), normalWheel]
   )
 
   const [wheelItems, setWheelItems] = useState<{ option: string }[]>([])
@@ -131,84 +142,150 @@ const SetUpForm = (props: ISetUpFromProps) => {
             onChange={(e) => setCsvUrl(e.target.value)}
           />
         </label>
+        <p className='text-sm text-gray-400 break-all'>
+          <span className='text-primary'>Excel: </span>
+          https://docs.google.com/spreadsheets/d/1Y2PKMDp6tBs8QbsH7V8hmWdMA8KvfYnxC4C37wP4XNI
+        </p>
+        <p className='text-sm text-gray-400 break-all'>
+          <span className='text-primary'>CSV Sharing: </span>
+          https://docs.google.com/spreadsheets/d/e/2PACX-1vS3dIbzkQ2mA6ewQlUimcQlSeuy0ycVS9uR9lFChQ_S87AIhl9_E2MJi_u3ow8vEeSfByqIFhuuFxW9/pub?output=csv
+        </p>
 
-        <div className='grid grid-cols-2 gap-4'>
-          <label className='input input-bordered flex items-center px-2 col-span-2'>
-            <p className='flex-shrink-0'>Số giải đặc biệt</p>
+        <div className='flex items-center justify-between'>
+          <label className='label cursor-pointer justify-start space-x-4 flex-1'>
             <input
-              type='number'
-              className='text-center w-full'
-              placeholder='Số lượng'
-              onChange={(e) => {
-                setConfig({
-                  ...config,
-                  special: Number(e.target.value)
-                })
-              }}
-              value={config.special}
+              type='radio'
+              name='radio-1'
+              className='radio'
+              checked={!normalWheel}
+              onChange={() => setNormalWheel(false)}
             />
+            <span className='label-text'>Sắp xếp</span>
           </label>
-          <label className='input input-bordered flex items-center px-2'>
-            <p className='flex-shrink-0'>Số giải nhất</p>
+
+          <label className='label cursor-pointer justify-start space-x-4 flex-1'>
             <input
-              type='number'
-              className='text-center w-full'
-              placeholder='Số lượng'
-              onChange={(e) => {
-                setConfig({
-                  ...config,
-                  first: Number(e.target.value)
-                })
-              }}
-              value={config.first}
+              type='radio'
+              name='radio-2'
+              className='radio'
+              checked={normalWheel}
+              onChange={() => setNormalWheel(true)}
             />
-          </label>
-          <label className='input input-bordered flex items-center px-2'>
-            <p className='flex-shrink-0'>Số giải nhì</p>
-            <input
-              type='number'
-              className='text-center w-full'
-              placeholder='Số lượng'
-              onChange={(e) => {
-                setConfig({
-                  ...config,
-                  second: Number(e.target.value)
-                })
-              }}
-              value={config.second}
-            />
-          </label>
-          <label className='input input-bordered flex items-center px-2'>
-            <p className='flex-shrink-0'>Số giải ba</p>
-            <input
-              type='number'
-              className='text-center w-full'
-              placeholder='Số lượng'
-              onChange={(e) => {
-                setConfig({
-                  ...config,
-                  third: Number(e.target.value)
-                })
-              }}
-              value={config.third}
-            />
-          </label>
-          <label className='input input-bordered flex items-center px-2'>
-            <p className='flex-shrink-0'>Số giải khuyến khích</p>
-            <input
-              type='number'
-              className='text-center w-full'
-              placeholder='Số lượng'
-              onChange={(e) => {
-                setConfig({
-                  ...config,
-                  four: Number(e.target.value)
-                })
-              }}
-              value={config.four}
-            />
+            <span className='label-text'>Đồng giá</span>
           </label>
         </div>
+
+        {normalWheel ? (
+          <div className='grid grid-cols-1 gap-4'>
+            <label className='input input-bordered flex items-center px-2'>
+              <p className='flex-shrink-0'>Số lượng</p>
+              <input
+                type='number'
+                className='text-center w-full'
+                placeholder='Số lượng'
+                onChange={(e) => {
+                  setConfig({
+                    ...config,
+                    normal: Number(e.target.value)
+                  })
+                }}
+                value={config.normal}
+              />
+            </label>
+
+            <label className='input input-bordered flex items-center px-2'>
+              <p className='flex-shrink-0'>Giá trị ($$$)</p>
+              <input
+                type='number'
+                className='text-center w-full'
+                placeholder='Số lượng'
+                onChange={(e) => {
+                  setPrice(Number(e.target.value))
+                }}
+                value={price}
+              />
+            </label>
+          </div>
+        ) : (
+          <div className='grid grid-cols-2 gap-4'>
+            <label className='input input-bordered flex items-center px-2 col-span-2'>
+              <p className='flex-shrink-0'>Số giải đặc biệt</p>
+              <input
+                type='number'
+                className='text-center w-full'
+                placeholder='Số lượng'
+                onChange={(e) => {
+                  setConfig({
+                    ...config,
+                    special: Number(e.target.value)
+                  })
+                }}
+                value={config.special}
+              />
+            </label>
+            <label className='input input-bordered flex items-center px-2'>
+              <p className='flex-shrink-0'>Số giải nhất</p>
+              <input
+                type='number'
+                className='text-center w-full'
+                placeholder='Số lượng'
+                onChange={(e) => {
+                  setConfig({
+                    ...config,
+                    first: Number(e.target.value)
+                  })
+                }}
+                value={config.first}
+              />
+            </label>
+            <label className='input input-bordered flex items-center px-2'>
+              <p className='flex-shrink-0'>Số giải nhì</p>
+              <input
+                type='number'
+                className='text-center w-full'
+                placeholder='Số lượng'
+                onChange={(e) => {
+                  setConfig({
+                    ...config,
+                    second: Number(e.target.value)
+                  })
+                }}
+                value={config.second}
+              />
+            </label>
+            <label className='input input-bordered flex items-center px-2'>
+              <p className='flex-shrink-0'>Số giải ba</p>
+              <input
+                type='number'
+                className='text-center w-full'
+                placeholder='Số lượng'
+                onChange={(e) => {
+                  setConfig({
+                    ...config,
+                    third: Number(e.target.value)
+                  })
+                }}
+                value={config.third}
+              />
+            </label>
+            <label className='input input-bordered flex items-center px-2'>
+              <p className='flex-shrink-0'>Số giải khuyến khích</p>
+              <input
+                type='number'
+                className='text-center w-full'
+                placeholder='Số lượng'
+                onChange={(e) => {
+                  setConfig({
+                    ...config,
+                    four: Number(e.target.value)
+                  })
+                }}
+                value={config.four}
+              />
+            </label>
+          </div>
+        )}
+
         <button
           type='button'
           className='btn'
@@ -221,7 +298,9 @@ const SetUpForm = (props: ISetUpFromProps) => {
               props.onContinue({
                 wheelItems,
                 total,
-                config
+                config,
+                normalWheel: normalWheel,
+                price
               })
             }
           }}

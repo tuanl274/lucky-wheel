@@ -2,6 +2,8 @@ export interface IFormData {
   wheelItems: any[]
   total: number
   config: IConfigLevel
+  normalWheel: boolean
+  price: number
 }
 
 export interface IConfigLevel {
@@ -10,6 +12,7 @@ export interface IConfigLevel {
   second: number
   third: number
   four: number
+  normal: number
 }
 
 export interface WheelItem {
@@ -27,5 +30,6 @@ export enum ResultType {
   first,
   second,
   third,
-  four
+  four,
+  normal
 }
